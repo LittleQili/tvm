@@ -1,3 +1,5 @@
+# tvm/python/tvm/topi/nn/dense.py
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -108,7 +110,7 @@ def matmul(
             tensor_a[i, k].astype(out_dtype) * tensor_b[k, j].astype(out_dtype), axis=k
         )
         compute_name = "T_matmul_NN"
-        compute_tag = "matmul"
+        compute_tag = "dense"
 
     mat = te.compute(
         (batch, out_dim),
@@ -181,7 +183,7 @@ def dense(data, weight, bias=None, out_dtype=None, auto_scheduler_rewritten_layo
     output : tvm.te.Tensor
         2-D with shape [batch, out_dim]
     """
-    return matmul(data, weight, bias, out_dtype, False, True, auto_scheduler_rewritten_layout)
+    return matmul(data, weight, bias, out_dtype, False, False, auto_scheduler_rewritten_layout)
 
 
 @tvm.target.generic_func

@@ -1,3 +1,5 @@
+# tvm/python/tvm/topi/gpu/dense.py
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -132,7 +134,6 @@ def schedule_dense_large_batch(cfg, outs):
     """Schedule float32/64 dense with large batch size"""
     outs = [outs] if isinstance(outs, te.tensor.Tensor) else outs
     s = te.create_schedule([x.op for x in outs])
-
     def _callback(op):
         if op.tag == "dense":
             _schedule_dense_large_batch(cfg, s, op.output(0))
@@ -147,7 +148,7 @@ def _schedule_dense_large_batch(cfg, s, C):
     if len(B.op.input_tensors) == 1 and B.op.input_tensors[0] == A:
         s[B].compute_inline()
     batch, in_dim = get_const_tuple(A.shape)
-    out_dim, _ = get_const_tuple(B.shape)
+    _, out_dim = get_const_tuple(B.shape)
     k = C.op.reduce_axis[0]
 
     # create tuning space
